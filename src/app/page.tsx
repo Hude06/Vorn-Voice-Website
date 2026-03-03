@@ -21,7 +21,7 @@ import {
   WandSparkles,
 } from "lucide-react";
 
-const downloadUrl = "https://vornvoice.app/updates/mac/stable";
+const downloadUrl = "https://vorn.judemakes.dev/download";
 
 const featureList = [
   {
