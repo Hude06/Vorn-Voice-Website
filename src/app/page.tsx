@@ -21,7 +21,7 @@ import {
   WandSparkles,
 } from "lucide-react";
 
-const downloadUrl = "https://vorn.judemakes.dev/download";
+const downloadUrl = "/download";
 
 const featureList = [
   {
