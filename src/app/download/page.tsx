@@ -1,25 +1,74 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-const fileUrl = "/download/Vorn-Voice.dmg";
+const updateBasePath = "/updates/mac/stable";
+const metadataUrl = `${updateBasePath}/latest-mac.yml`;
 
 export default function DownloadPage() {
+  const [fileUrl, setFileUrl] = useState(metadataUrl);
+
   useEffect(() => {
-    window.location.replace(fileUrl);
+    let cancelled = false;
+
+    const resolveDownloadUrl = async () => {
+      try {
+        const response = await fetch(metadataUrl, { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error(`Failed to load metadata (${response.status})`);
+        }
+
+        const metadata = await response.text();
+        const urls = Array.from(metadata.matchAll(/^\s*-\s+url:\s*(.+)$/gm)).map((match) => stripYaml(match[1]));
+        const dmgUrl = urls.find((url) => url.endsWith(".dmg"));
+        const fallbackPath = metadata.match(/^path:\s*(.+)$/m);
+        const selectedUrl = dmgUrl ?? (fallbackPath ? stripYaml(fallbackPath[1]) : "");
+
+        if (!selectedUrl || cancelled) {
+          return;
+        }
+
+        const absoluteUrl = selectedUrl.startsWith("http") ? selectedUrl : `${updateBasePath}/${selectedUrl}`;
+        setFileUrl(absoluteUrl);
+        window.location.replace(absoluteUrl);
+      } catch {
+        if (!cancelled) {
+          window.location.replace(metadataUrl);
+        }
+      }
+    };
+
+    void resolveDownloadUrl();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl items-center justify-center px-6 text-center">
-      <div className="space-y-4">
-        <h1 className="text-2xl font-semibold">Starting your download...</h1>
-        <p className="text-sm text-muted-foreground">
+    <main className="mesh-background relative flex min-h-screen items-center justify-center px-6 text-center">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-primary/12 via-primary/4 to-transparent" />
+      <div className="glass-panel relative w-full max-w-2xl space-y-4 rounded-3xl border border-border/90 bg-card/85 p-8 sm:p-10">
+        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Starting your download...</h1>
+        <p className="text-sm leading-relaxed text-muted-foreground">
           If the download does not start, use the direct link below.
         </p>
-        <a className="underline" href={fileUrl}>
+        <a
+          className="inline-flex items-center justify-center rounded-full border border-primary/35 bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          href={fileUrl}
+        >
           Download Vorn Voice for macOS
         </a>
       </div>
     </main>
   );
+}
+
+function stripYaml(value: string): string {
+  const trimmed = value.trim();
+  if ((trimmed.startsWith("\"") && trimmed.endsWith("\"")) || (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
+    return trimmed.slice(1, -1);
+  }
+
+  return trimmed;
 }

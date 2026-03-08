@@ -76,43 +76,53 @@ const useCases = [
 
 export default function Home() {
   return (
-    <main className="mesh-background min-h-screen">
-      <section className="mx-auto w-full max-w-6xl px-6 pb-10 pt-8 sm:px-10">
-        <nav className="glass-panel animate-rise flex items-center justify-between rounded-3xl border px-4 py-3 sm:px-6">
-          <div className="flex items-center gap-2 text-sm font-semibold">
+    <main className="mesh-background relative min-h-screen overflow-hidden">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-primary/12 via-primary/4 to-transparent" />
+      <section className="relative mx-auto w-full max-w-6xl px-6 pb-14 pt-8 sm:px-10">
+        <nav className="glass-panel animate-rise flex items-center justify-between rounded-3xl border border-border/90 bg-card/85 px-4 py-3 sm:px-6">
+          <div className="flex items-center gap-2.5 text-sm font-semibold tracking-wide">
             <Mic2 className="h-4 w-4 text-primary" />
             Vorn Voice
           </div>
-          <Badge className="rounded-full border-primary/30 bg-primary/10 text-primary hover:bg-primary/10">
+          <Badge className="rounded-full border-primary/35 bg-primary/10 text-primary hover:bg-primary/10">
             macOS app
           </Badge>
         </nav>
 
-        <div className="relative mt-12 overflow-hidden rounded-[2rem] border bg-card/80 px-6 py-12 shadow-xl shadow-primary/10 sm:px-12">
-          <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-chart-2/20 blur-3xl" />
-          <div className="absolute -bottom-20 -left-8 h-56 w-56 rounded-full bg-chart-1/20 blur-3xl" />
+        <div className="relative mt-12 overflow-hidden rounded-[2rem] border border-border/90 bg-card/85 px-6 py-12 shadow-2xl shadow-black/40 sm:px-12">
+          <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/18 blur-3xl" />
+          <div className="absolute -bottom-24 -left-14 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
 
           <div className="relative grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
             <div className="space-y-6">
-              <Badge className="animate-rise rounded-full border-border bg-background/80 text-foreground hover:bg-background/80">
+              <Badge className="animate-rise rounded-full border-border/80 bg-background/75 text-foreground hover:bg-background/75">
                 Local-first dictation for developers
               </Badge>
-              <h1 className="animate-rise-delay text-balance text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
+              <h1 className="animate-rise-delay text-balance text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
                 Speak ideas. Ship code.
                 <span className="text-primary"> No context switching.</span>
               </h1>
-              <p className="animate-rise-delay-2 max-w-xl text-base text-muted-foreground sm:text-lg">
+              <p className="animate-rise-delay-2 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
                 Vorn Voice turns your voice into clean text with a push-to-talk hotkey,
                 local whisper models, and instant paste into your current app.
               </p>
               <div className="animate-rise-delay-2 flex flex-col gap-3 sm:flex-row">
-                <Button asChild size="lg" className="rounded-full px-7 text-base">
+                <Button
+                  asChild
+                  size="lg"
+                  className="rounded-full px-8 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25"
+                >
                   <a href={downloadUrl}>
                     <Download className="mr-2 h-4 w-4" />
                     Download for macOS
                   </a>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="rounded-full px-7 text-base">
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="rounded-full border-border/90 bg-transparent px-7 text-base"
+                >
                   <a href="#examples">
                     See examples
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -121,23 +131,29 @@ export default function Home() {
               </div>
             </div>
 
-            <Card className="glass-panel animate-rise-delay-2 rounded-3xl border-border/80">
+            <Card className="glass-panel animate-rise-delay-2 rounded-3xl border border-border/90 bg-[#151515]">
               <CardHeader>
-                <CardTitle className="font-mono text-sm text-muted-foreground">
+                <CardTitle className="font-mono text-sm uppercase tracking-[0.18em] text-muted-foreground">
                   Typical workflow
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 text-sm">
-                <div className="rounded-2xl border bg-background/70 p-4">
-                  <p className="font-mono text-xs text-muted-foreground">Step 1</p>
+                <div className="rounded-2xl border border-border/90 bg-background/70 p-4">
+                  <p className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
+                    Step 1
+                  </p>
                   <p className="mt-1">Hold your shortcut: Shift + Command + R</p>
                 </div>
-                <div className="rounded-2xl border bg-background/70 p-4">
-                  <p className="font-mono text-xs text-muted-foreground">Step 2</p>
+                <div className="rounded-2xl border border-border/90 bg-background/70 p-4">
+                  <p className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
+                    Step 2
+                  </p>
                   <p className="mt-1">Speak naturally for PR comments, docs, and updates</p>
                 </div>
-                <div className="rounded-2xl border bg-background/70 p-4">
-                  <p className="font-mono text-xs text-muted-foreground">Step 3</p>
+                <div className="rounded-2xl border border-border/90 bg-background/70 p-4">
+                  <p className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
+                    Step 3
+                  </p>
                   <p className="mt-1">Release and let Vorn Voice transcribe + paste instantly</p>
                 </div>
               </CardContent>
@@ -146,21 +162,27 @@ export default function Home() {
         </div>
 
         <section className="mt-14 grid gap-4 md:grid-cols-3">
-          <Card className="glass-panel rounded-2xl">
+          <Card className="glass-panel rounded-2xl border-border/90 bg-[#151515]">
             <CardContent className="pt-6">
-              <p className="font-mono text-xs uppercase text-muted-foreground">Default Hotkey</p>
+              <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                Default Hotkey
+              </p>
               <p className="mt-2 text-xl font-semibold">Shift + Command + R</p>
             </CardContent>
           </Card>
-          <Card className="glass-panel rounded-2xl">
+          <Card className="glass-panel rounded-2xl border-border/90 bg-[#151515]">
             <CardContent className="pt-6">
-              <p className="font-mono text-xs uppercase text-muted-foreground">Models</p>
+              <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                Models
+              </p>
               <p className="mt-2 text-xl font-semibold">tiny.en, base.en, small.en</p>
             </CardContent>
           </Card>
-          <Card className="glass-panel rounded-2xl">
+          <Card className="glass-panel rounded-2xl border-border/90 bg-[#151515]">
             <CardContent className="pt-6">
-              <p className="font-mono text-xs uppercase text-muted-foreground">Update cadence</p>
+              <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                Update cadence
+              </p>
               <p className="mt-2 text-xl font-semibold">Auto-check every 6 hours</p>
             </CardContent>
           </Card>
@@ -173,7 +195,7 @@ export default function Home() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {featureList.map(({ icon: Icon, title, body }) => (
-              <Card key={title} className="glass-panel rounded-2xl border-border/80">
+              <Card key={title} className="glass-panel rounded-2xl border-border/90 bg-[#151515]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
                     <Icon className="h-4 w-4 text-primary" />
@@ -195,12 +217,12 @@ export default function Home() {
           </div>
           <div className="grid gap-4 lg:grid-cols-3">
             {useCases.map((item) => (
-              <Card key={item.title} className="glass-panel rounded-2xl">
+              <Card key={item.title} className="glass-panel rounded-2xl border-border/90 bg-[#151515]">
                 <CardHeader>
                   <CardTitle className="text-lg">{item.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <pre className="overflow-x-auto rounded-xl border bg-background/70 p-4 font-mono text-xs leading-6 text-muted-foreground">
+                  <pre className="overflow-x-auto rounded-xl border border-border/90 bg-background/75 p-4 font-mono text-xs leading-6 text-muted-foreground">
                     <code>{item.snippet}</code>
                   </pre>
                 </CardContent>
@@ -210,7 +232,7 @@ export default function Home() {
         </section>
 
         <section className="mt-16 grid gap-6 lg:grid-cols-[1fr_1.1fr] lg:items-start">
-          <Card className="glass-panel rounded-2xl border-primary/20">
+          <Card className="glass-panel rounded-2xl border border-primary/35 bg-[#151515]">
             <CardHeader>
               <CardTitle className="text-2xl tracking-tight">Ready to type with your voice?</CardTitle>
             </CardHeader>
@@ -228,7 +250,7 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          <Card className="glass-panel rounded-2xl">
+          <Card className="glass-panel rounded-2xl border border-border/90 bg-[#151515]">
             <CardHeader>
               <CardTitle className="text-2xl tracking-tight">FAQ</CardTitle>
             </CardHeader>
@@ -259,7 +281,7 @@ export default function Home() {
           </Card>
         </section>
 
-        <footer className="mt-16 border-t py-8 text-sm text-muted-foreground">
+        <footer className="mt-16 border-t border-border/90 py-8 text-sm text-muted-foreground">
           <p>Vorn Voice - speak naturally, write everywhere.</p>
         </footer>
       </section>
