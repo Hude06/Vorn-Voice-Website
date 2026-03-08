@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const updateBasePath = "/updates/mac/stable";
+const updateBasePath = "https://vorn.judemakes.dev/updates/mac/stable";
 const metadataUrl = `${updateBasePath}/latest-mac.yml`;
 
 export default function DownloadPage() {
