@@ -32,7 +32,7 @@ const featureList = [
   {
     icon: Bolt,
     title: "Local whisper models",
-    body: "Choose tiny, base, or small models depending on whether speed or quality matters most.",
+    body: "Start with bundled base.en, then install tiny.en for speed or small.en for higher accuracy.",
   },
   {
     icon: WandSparkles,
@@ -175,7 +175,7 @@ export default function Home() {
               <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
                 Models
               </p>
-              <p className="mt-2 text-xl font-semibold">tiny.en, base.en, small.en</p>
+              <p className="mt-2 text-xl font-semibold">base.en bundled, tiny.en + small.en optional</p>
             </CardContent>
           </Card>
           <Card className="glass-panel rounded-2xl border-border/90 bg-[#151515]">
