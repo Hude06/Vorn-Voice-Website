@@ -34,11 +34,7 @@ export function DownloadsChart({ data }: DownloadsChartProps) {
           <CartesianGrid stroke="rgba(255,255,255,0.08)" strokeDasharray="3 3" vertical={false} />
           <XAxis
             dataKey="date"
-            tickFormatter={(value: string) =>
-              new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(
-                new Date(value),
-              )
-            }
+            tickFormatter={formatChartDate}
             tick={{ fill: "rgba(218, 218, 218, 0.72)", fontSize: 12 }}
             axisLine={false}
             tickLine={false}
@@ -59,13 +55,7 @@ export function DownloadsChart({ data }: DownloadsChartProps) {
               boxShadow: "0 20px 70px rgba(0,0,0,0.35)",
             }}
             formatter={(value: number, name: string) => [value, name === "downloads" ? "Downloads" : "Unique"]}
-            labelFormatter={(value: string) =>
-              new Intl.DateTimeFormat("en-US", {
-                month: "long",
-                day: "numeric",
-                year: "numeric",
-              }).format(new Date(value))
-            }
+            labelFormatter={formatTooltipDate}
           />
           <Area
             type="monotone"
@@ -85,4 +75,26 @@ export function DownloadsChart({ data }: DownloadsChartProps) {
       </ResponsiveContainer>
     </div>
   );
+}
+
+function formatChartDate(value: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  }).format(parseDateKey(value));
+}
+
+function formatTooltipDate(value: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(parseDateKey(value));
+}
+
+function parseDateKey(value: string) {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day, 12));
 }

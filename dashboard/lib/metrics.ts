@@ -19,6 +19,7 @@ export type RecentDownload = {
 };
 
 export type DashboardMetrics = {
+  timeZone: string;
   totalDownloads: number;
   uniqueDownloaders: number;
   downloadsToday: number;
@@ -33,6 +34,7 @@ export type DashboardMetrics = {
 type CountRow = { total: number };
 type LatestDestinationRow = { destinationUrl: string | null };
 type DailyRow = { date: string; downloads: number; uniqueDownloaders: number };
+type WindowRow = { createdAt: string; ipHash: string | null };
 type RecentRow = {
   id: number;
   createdAt: string;
@@ -43,8 +45,13 @@ type RecentRow = {
   ipHash: string | null;
 };
 
-export function getDashboardMetrics(): DashboardMetrics {
+const trailingWindowDays = 30;
+const trailingWindowBufferDays = 32;
+const defaultDashboardTimeZone = "UTC";
+
+export function getDashboardMetrics(options: { timeZone?: string } = {}): DashboardMetrics {
   const db = getDb();
+  const timeZone = resolveDashboardTimeZone(options.timeZone);
 
   const totalDownloads = db
     .prepare<[], CountRow>("SELECT COUNT(*) AS total FROM download_events")
@@ -56,48 +63,24 @@ export function getDashboardMetrics(): DashboardMetrics {
     )
     .get()?.total ?? 0;
 
-  const downloadsToday = db
-    .prepare<[], CountRow>(
-      "SELECT COUNT(*) AS total FROM download_events WHERE created_at >= datetime('now', 'start of day')",
-    )
-    .get()?.total ?? 0;
-
-  const downloadsLast7Days = db
-    .prepare<[], CountRow>(
-      "SELECT COUNT(*) AS total FROM download_events WHERE created_at >= datetime('now', '-6 days', 'start of day')",
-    )
-    .get()?.total ?? 0;
-
-  const downloadsLast30Days = db
-    .prepare<[], CountRow>(
-      "SELECT COUNT(*) AS total FROM download_events WHERE created_at >= datetime('now', '-29 days', 'start of day')",
-    )
-    .get()?.total ?? 0;
-
-  const uniquesLast30Days = db
-    .prepare<[], CountRow>(
-      "SELECT COUNT(DISTINCT ip_hash) AS total FROM download_events WHERE ip_hash IS NOT NULL AND created_at >= datetime('now', '-29 days', 'start of day')",
-    )
-    .get()?.total ?? 0;
-
   const latestDestination = db
     .prepare<[], LatestDestinationRow>(
       "SELECT destination_url AS destinationUrl FROM download_events ORDER BY created_at DESC LIMIT 1",
     )
     .get()?.destinationUrl ?? null;
 
-  const dailyRows = db
-    .prepare<[], DailyRow>(
+  const trailingRows = db
+    .prepare<[], WindowRow>(
       `SELECT
-        DATE(created_at) AS date,
-        COUNT(*) AS downloads,
-        COUNT(DISTINCT ip_hash) AS uniqueDownloaders
+        created_at AS createdAt,
+        ip_hash AS ipHash
       FROM download_events
-      WHERE created_at >= datetime('now', '-29 days', 'start of day')
-      GROUP BY DATE(created_at)
-      ORDER BY DATE(created_at) ASC`,
+      WHERE created_at >= datetime('now', '-${trailingWindowBufferDays} days', 'start of day')
+      ORDER BY created_at ASC`,
     )
     .all();
+
+  const rollingMetrics = buildRollingMetrics(trailingRows, timeZone);
 
   const recentDownloads = db
     .prepare<[], RecentRow>(
@@ -116,14 +99,15 @@ export function getDashboardMetrics(): DashboardMetrics {
     .all();
 
   return {
+    timeZone,
     totalDownloads,
     uniqueDownloaders,
-    downloadsToday,
-    downloadsLast7Days,
-    downloadsLast30Days,
-    uniquesLast30Days,
+    downloadsToday: rollingMetrics.downloadsToday,
+    downloadsLast7Days: rollingMetrics.downloadsLast7Days,
+    downloadsLast30Days: rollingMetrics.downloadsLast30Days,
+    uniquesLast30Days: rollingMetrics.uniquesLast30Days,
     latestDestination,
-    dailySeries: fillSeriesGaps(dailyRows),
+    dailySeries: rollingMetrics.dailySeries,
     recentDownloads,
   };
 }
@@ -179,22 +163,115 @@ function hashIp(ipAddress: string | null) {
   return crypto.createHash("sha256").update(`${salt}:${ipAddress}`).digest("hex");
 }
 
-function fillSeriesGaps(rows: DailyRow[]) {
-  const byDate = new Map(rows.map((row) => [row.date, row]));
-  const start = new Date();
-  start.setUTCHours(0, 0, 0, 0);
-  start.setUTCDate(start.getUTCDate() - 29);
+function buildRollingMetrics(rows: WindowRow[], timeZone: string) {
+  const todayKey = getDateKey(new Date(), timeZone);
+  const dateKeys = buildTrailingDateKeys(todayKey, trailingWindowDays);
+  const validKeys = new Set(dateKeys);
+  const dailyCounts = new Map<string, DailyRow>();
+  const uniqueKeysByDate = new Map<string, Set<string>>();
+  const uniqueKeysLast30Days = new Set<string>();
 
-  return Array.from({ length: 30 }, (_, index) => {
-    const pointDate = new Date(start);
-    pointDate.setUTCDate(start.getUTCDate() + index);
-    const key = pointDate.toISOString().slice(0, 10);
-    const row = byDate.get(key);
+  for (const key of dateKeys) {
+    dailyCounts.set(key, {
+      date: key,
+      downloads: 0,
+      uniqueDownloaders: 0,
+    });
+  }
+
+  for (const row of rows) {
+    const dateKey = getDateKey(parseSqliteTimestamp(row.createdAt), timeZone);
+
+    if (!validKeys.has(dateKey)) {
+      continue;
+    }
+
+    const entry = dailyCounts.get(dateKey);
+
+    if (!entry) {
+      continue;
+    }
+
+    entry.downloads += 1;
+
+    if (row.ipHash) {
+      const dailyUniqueKeys = uniqueKeysByDate.get(dateKey) ?? new Set<string>();
+      dailyUniqueKeys.add(row.ipHash);
+      uniqueKeysByDate.set(dateKey, dailyUniqueKeys);
+      uniqueKeysLast30Days.add(row.ipHash);
+    }
+  }
+
+  const dailySeries = dateKeys.map((dateKey) => {
+    const entry = dailyCounts.get(dateKey);
+    const uniqueDownloaders = uniqueKeysByDate.get(dateKey)?.size ?? 0;
 
     return {
-      date: key,
-      downloads: row?.downloads ?? 0,
-      uniqueDownloaders: row?.uniqueDownloaders ?? 0,
+      date: dateKey,
+      downloads: entry?.downloads ?? 0,
+      uniqueDownloaders,
     };
   });
+
+  return {
+    dailySeries,
+    downloadsToday: dailySeries.at(-1)?.downloads ?? 0,
+    downloadsLast7Days: sumDownloads(dailySeries.slice(-7)),
+    downloadsLast30Days: sumDownloads(dailySeries),
+    uniquesLast30Days: uniqueKeysLast30Days.size,
+  };
+}
+
+function sumDownloads(rows: DailyRow[]) {
+  return rows.reduce((total, row) => total + row.downloads, 0);
+}
+
+function resolveDashboardTimeZone(value?: string) {
+  if (!value) {
+    return defaultDashboardTimeZone;
+  }
+
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: value });
+    return value;
+  } catch {
+    return defaultDashboardTimeZone;
+  }
+}
+
+function buildTrailingDateKeys(todayKey: string, length: number) {
+  const [year, month, day] = todayKey.split("-").map(Number);
+  const anchor = new Date(Date.UTC(year, month - 1, day));
+
+  return Array.from({ length }, (_, index) => {
+    const pointDate = new Date(anchor);
+    pointDate.setUTCDate(anchor.getUTCDate() - (length - index - 1));
+    return pointDate.toISOString().slice(0, 10);
+  });
+}
+
+function getDateKey(value: Date, timeZone: string) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(value);
+  const year = parts.find((part) => part.type === "year")?.value;
+  const month = parts.find((part) => part.type === "month")?.value;
+  const day = parts.find((part) => part.type === "day")?.value;
+
+  if (!year || !month || !day) {
+    throw new Error(`Failed to derive local date key for timezone ${timeZone}`);
+  }
+
+  return `${year}-${month}-${day}`;
+}
+
+function parseSqliteTimestamp(value: string) {
+  const [datePart, timePart = "00:00:00"] = value.split(" ");
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hours, minutes, seconds] = timePart.split(":").map(Number);
+
+  return new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds ?? 0));
 }
