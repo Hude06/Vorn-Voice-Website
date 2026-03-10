@@ -1,0 +1,17 @@
+[Unit]
+Description=Vorn stats dashboard
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/vorn/website/dashboard
+Environment=NODE_ENV=production
+EnvironmentFile=/var/www/vorn/website/dashboard/.env.production
+ExecStart=/usr/bin/npm run start -- --hostname 127.0.0.1 --port 3010
+Restart=always
+RestartSec=5
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target

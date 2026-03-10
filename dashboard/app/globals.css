@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+:root {
+  --background: oklch(0.12 0.01 250);
+  --foreground: oklch(0.96 0 0);
+  --card: oklch(0.17 0.01 255 / 78%);
+  --card-foreground: oklch(0.96 0 0);
+  --popover: oklch(0.16 0.01 255);
+  --popover-foreground: oklch(0.96 0 0);
+  --primary: oklch(0.76 0.16 65);
+  --primary-foreground: oklch(0.2 0 0);
+  --muted: oklch(0.24 0.01 250);
+  --muted-foreground: oklch(0.74 0.01 250);
+  --border: oklch(0.28 0.01 250);
+  --ring: oklch(0.76 0.16 65);
+  --chart-1: oklch(0.76 0.16 65);
+  --chart-2: oklch(0.72 0.13 190);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+}
+
+* {
+  box-sizing: border-box;
+  border-color: var(--border);
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 12% 18%, oklch(0.3 0.08 55 / 0.28), transparent 28%),
+    radial-gradient(circle at 88% 10%, oklch(0.28 0.12 200 / 0.2), transparent 30%),
+    linear-gradient(180deg, oklch(0.14 0.01 255), oklch(0.1 0.01 255));
+  color: var(--foreground);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.mesh {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, white 6%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, white 6%, transparent) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.panel-glow {
+  box-shadow:
+    0 10px 60px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}

@@ -20,15 +20,16 @@ npm run build
 npm run start
 ```
 
-## Analytics
+## Download Tracking
 
-- Google Analytics 4 is loaded globally from `src/components/analytics/google-analytics.tsx`
-- The active GA measurement ID is `G-5S85L38R1M`
-- Standard page views are sent on page load and client-side route changes
-- App download attempts are tracked from `src/app/download/page.tsx` with the custom GA event `download_start`
+- The public marketing site no longer uses Google Analytics.
+- App download attempts are routed from `src/app/download/page.tsx` to the first-party stats service.
+- Set `NEXT_PUBLIC_DOWNLOAD_TRACKING_URL` to the tracked redirect endpoint for your deployment.
+- The private dashboard lives in `dashboard/` and stores download events in SQLite.
 
 ## Deployment Notes
 
 - This project uses static export via `next.config.ts`
 - Run `npm run lint` and `npm run build` before deploying
-- After deploy, verify traffic in Google Analytics Realtime and confirm `download_start` fires when visiting `/download`
+- Deploy `dashboard/` as a separate Node service behind nginx on `stats.judemakes.dev`
+- Protect the dashboard UI and `/api/metrics` with nginx basic auth while leaving the public download redirect route open

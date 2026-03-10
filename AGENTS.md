@@ -18,6 +18,7 @@
 - Shared UI primitives live in `src/components/ui/`.
 - Shared utilities live in `src/lib/`.
 - Static assets belong in `public/`.
+- Private stats dashboard lives in `dashboard/` as a separate Next.js app and deployment target.
 - Avoid editing generated output in `.next/` or `out/`.
 
 ## Core Commands
@@ -27,6 +28,11 @@
 - Start production server locally: `npm run start`
 - Lint whole repo: `npm run lint`
 - Type-check only: `npx tsc --noEmit`
+- Dashboard install: `cd dashboard && npm install`
+- Dashboard dev: `cd dashboard && npm run dev`
+- Dashboard build: `cd dashboard && npm run build`
+- Dashboard start: `cd dashboard && npm run start`
+- Dashboard lint: `cd dashboard && npm run lint`
 
 ## Lint and Targeted Validation
 - Lint a single file: `npx eslint src/app/page.tsx`
@@ -49,6 +55,7 @@
 
 ## Pre-PR Validation
 - For UI or route changes, run `npm run lint` and `npm run build` before finishing.
+- For `dashboard/` changes, also run `cd dashboard && npm run lint` and `cd dashboard && npm run build`.
 - For TypeScript-heavy refactors, also run `npx tsc --noEmit`.
 - If you add tests in the future, run the narrowest relevant test command plus the full test suite if practical.
 - Call out any validation you could not run.
@@ -56,6 +63,7 @@
 ## Architecture Notes
 - This is an App Router project, so prefer route files, layouts, and server-first patterns that fit Next.js.
 - Keep static-export compatibility in mind; avoid server features that require a Node runtime unless the deployment model changes.
+- `dashboard/` is intentionally separate from the static-export marketing site and can use server-side Node features such as route handlers and SQLite.
 - Client components must opt in with `"use client"`.
 - Shared visual building blocks are intentionally centralized in `src/components/ui/`.
 - Use `@/` imports for internal modules instead of long relative paths.
