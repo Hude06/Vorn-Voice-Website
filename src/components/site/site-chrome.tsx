@@ -43,7 +43,7 @@ export function SiteHeader({ currentPath }: SiteHeaderProps) {
           </div>
         </div>
 
-        <div className="hidden items-center justify-between gap-6 md:flex">
+        <div className="mt-3 hidden items-center justify-between gap-6 md:flex">
           <nav className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
             {navItems.map((item) => {
               const isActive = currentPath === item.href;
