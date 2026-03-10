@@ -134,7 +134,11 @@ export function SiteFooter() {
               Products
             </p>
             {navItems.map((item) => (
-              <Link key={item.href} href={item.href} className="block hover:text-foreground">
+              <Link
+                key={item.href}
+                href={item.href}
+                className="block hover:text-foreground"
+              >
                 {item.label}
               </Link>
             ))}

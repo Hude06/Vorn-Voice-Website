@@ -1,15 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const updateBasePath = "https://vorn.judemakes.dev/updates/mac/stable";
 const metadataUrl = `${updateBasePath}/latest-mac.yml`;
 
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
 export default function DownloadPage() {
   const [fileUrl, setFileUrl] = useState(metadataUrl);
+  const hasTrackedStart = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
+
+    const trackDownloadStarted = (destination: string) => {
+      if (hasTrackedStart.current) {
+        return;
+      }
+
+      hasTrackedStart.current = true;
+
+      window.gtag?.("event", "download_start", {
+        app: "vorn_voice",
+        destination,
+      });
+    };
 
     const resolveDownloadUrl = async () => {
       try {
@@ -30,9 +50,16 @@ export default function DownloadPage() {
 
         const absoluteUrl = selectedUrl.startsWith("http") ? selectedUrl : `${updateBasePath}/${selectedUrl}`;
         setFileUrl(absoluteUrl);
-        window.location.replace(absoluteUrl);
+        trackDownloadStarted(absoluteUrl);
+
+        window.setTimeout(() => {
+          if (!cancelled) {
+            window.location.replace(absoluteUrl);
+          }
+        }, 150);
       } catch {
         if (!cancelled) {
+          trackDownloadStarted(metadataUrl);
           window.location.replace(metadataUrl);
         }
       }

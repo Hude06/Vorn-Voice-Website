@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
+
+import { GoogleAnalytics } from "@/components/analytics/google-analytics";
+
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -25,6 +28,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <GoogleAnalytics />
+      </head>
       <body
         className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} dark antialiased`}
       >

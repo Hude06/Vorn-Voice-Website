@@ -117,7 +117,9 @@ export default function QuadCodePage() {
                 size="lg"
                 className="w-full rounded-full border-border/90 bg-transparent px-7 text-base sm:w-auto"
               >
-                <Link href="#examples">See workflows</Link>
+                <Link href="#examples">
+                  See workflows
+                </Link>
               </Button>
             </div>
           </div>
@@ -321,7 +323,9 @@ export default function QuadCodePage() {
               </div>
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Button asChild size="lg" className="w-full rounded-full text-base sm:w-auto">
-                  <Link href="/vorn-voice">Explore Vorn Voice</Link>
+                  <Link href="/vorn-voice">
+                    Explore Vorn Voice
+                  </Link>
                 </Button>
                 <Button
                   asChild
@@ -329,7 +333,9 @@ export default function QuadCodePage() {
                   size="lg"
                   className="w-full rounded-full border-border/90 bg-transparent sm:w-auto"
                 >
-                  <Link href="/">Back to overview</Link>
+                  <Link href="/">
+                    Back to overview
+                  </Link>
                 </Button>
               </div>
             </CardContent>

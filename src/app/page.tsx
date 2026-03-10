@@ -125,20 +125,22 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                      <Button asChild className="w-full rounded-full px-5 font-semibold shadow-lg shadow-primary/20 sm:w-auto">
-                      <Link href={href}>
-                        Open page
-                        <ArrowRight className="h-4 w-4" />
-                      </Link>
-                    </Button>
-                    {href === "/vorn-voice" ? (
-                      <Button
+                        <Link href={href}>
+                          Open page
+                          <ArrowRight className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                     {href === "/vorn-voice" ? (
+                       <Button
                         asChild
                         variant="outline"
                          className="w-full rounded-full border-border/90 bg-transparent sm:w-auto"
                       >
-                        <Link href="/download">Download now</Link>
-                      </Button>
-                    ) : null}
+                          <Link href="/download">
+                            Download now
+                          </Link>
+                        </Button>
+                     ) : null}
                   </div>
                 </CardContent>
               </Card>
@@ -197,7 +199,9 @@ export default function Home() {
               </p>
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Button asChild size="lg" className="w-full rounded-full px-6 font-semibold sm:w-auto">
-                  <Link href="/vorn-voice">See the product page</Link>
+                  <Link href="/vorn-voice">
+                    See the product page
+                  </Link>
                 </Button>
                 <Button
                   asChild
@@ -205,7 +209,9 @@ export default function Home() {
                   size="lg"
                   className="w-full rounded-full border-border/90 bg-transparent px-6 sm:w-auto"
                 >
-                  <Link href="/download">Download Vorn Voice</Link>
+                  <Link href="/download">
+                    Download Vorn Voice
+                  </Link>
                 </Button>
               </div>
             </CardContent>

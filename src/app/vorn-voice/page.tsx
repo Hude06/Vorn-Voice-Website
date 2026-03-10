@@ -224,7 +224,9 @@ export default function VornVoicePage() {
                   size="lg"
                   className="w-full rounded-full border-border/90 bg-transparent sm:w-auto"
                 >
-                  <Link href="/">Back to overview</Link>
+                  <Link href="/">
+                    Back to overview
+                  </Link>
                 </Button>
               </div>
             </CardContent>
