@@ -71,8 +71,8 @@ export const voiceHighlights = [
   },
   {
     icon: Bolt,
-    title: "Local whisper models",
-    body: "Start with bundled base.en, then install tiny.en for speed or small.en for higher accuracy.",
+    title: "Local-first transcription",
+    body: "Turn speech into text on device so dictation feels fast, private, and ready whenever you are.",
   },
   {
     icon: WandSparkles,
@@ -91,8 +91,8 @@ export const voiceHighlights = [
   },
   {
     icon: Activity,
-    title: "Automatic updates",
-    body: "Packaged app builds can fetch updates in the background and install on restart.",
+    title: "Built for engineering work",
+    body: "Use it for PR replies, issue notes, docs, and quick status updates without leaving your current tool.",
   },
 ];
 

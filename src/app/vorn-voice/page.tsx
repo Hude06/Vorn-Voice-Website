@@ -113,25 +113,25 @@ export default function VornVoicePage() {
           <Card className="glass-panel rounded-[1.75rem] border-border/90 bg-[#151515] py-0">
             <CardContent className="py-6">
               <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
-                Default hotkey
+                Custom hotkeys
               </p>
-              <p className="mt-2 text-xl font-semibold">Shift + Command + R</p>
+              <p className="mt-2 text-xl font-semibold">Pick the shortcut that fits your flow</p>
             </CardContent>
           </Card>
           <Card className="glass-panel rounded-[1.75rem] border-border/90 bg-[#151515] py-0">
             <CardContent className="py-6">
               <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
-                Models
+                Works where you work
               </p>
-              <p className="mt-2 text-xl font-semibold">base.en bundled, tiny.en + small.en optional</p>
+              <p className="mt-2 text-xl font-semibold">Dictate into editors, docs, chat, and issue trackers</p>
             </CardContent>
           </Card>
           <Card className="glass-panel rounded-[1.75rem] border-border/90 bg-[#151515] py-0">
             <CardContent className="py-6">
               <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
-                Update cadence
+                Local-first transcription
               </p>
-              <p className="mt-2 text-xl font-semibold">Auto-check every 6 hours</p>
+              <p className="mt-2 text-xl font-semibold">Fast on-device speech-to-text without breaking focus</p>
             </CardContent>
           </Card>
         </div>

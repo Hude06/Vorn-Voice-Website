@@ -153,33 +153,33 @@ export default function Home() {
             <CardHeader className="border-b border-border/80 py-6">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-primary" />
-                <CardTitle className="text-2xl tracking-tight">What ships first</CardTitle>
+                <CardTitle className="text-2xl tracking-tight">How Vorn rolls out</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="space-y-5 py-6 text-muted-foreground">
               <p className="max-w-2xl leading-7">
-                Vorn Voice is the first complete product in the system. It is the clearest
-                expression of the Vorn approach: reduce friction, keep context, and make the
-                interface feel closer to intent.
+                Vorn Voice is the first product available today. The next products build on
+                that foundation by adding richer context and more ways to turn intent into
+                finished work.
               </p>
               <div className="grid gap-3 sm:grid-cols-3">
                 <div className="rounded-2xl border border-border/80 bg-background/70 p-4">
                   <p className="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
-                    Voice input
+                    Available now
                   </p>
-                  <p className="mt-2 text-lg font-semibold text-foreground">Shipping</p>
+                  <p className="mt-2 text-lg font-semibold text-foreground">Vorn Voice</p>
                 </div>
                 <div className="rounded-2xl border border-border/80 bg-background/70 p-4">
                   <p className="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
-                    Cursor context
+                    Coming next
                   </p>
-                  <p className="mt-2 text-lg font-semibold text-foreground">Next</p>
+                  <p className="mt-2 text-lg font-semibold text-foreground">Context Cursor</p>
                 </div>
                 <div className="rounded-2xl border border-border/80 bg-background/70 p-4">
                   <p className="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
-                    Parallel terminals
+                    Expanding after
                   </p>
-                  <p className="mt-2 text-lg font-semibold text-foreground">Then</p>
+                  <p className="mt-2 text-lg font-semibold text-foreground">Quad Code</p>
                 </div>
               </div>
             </CardContent>
