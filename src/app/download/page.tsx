@@ -46,15 +46,15 @@ export default function DownloadPage() {
   }, []);
 
   return (
-    <main className="mesh-background relative flex min-h-screen items-center justify-center px-6 text-center">
+    <main className="mesh-background relative flex min-h-screen items-center justify-center px-4 py-8 text-center sm:px-6">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-primary/12 via-primary/4 to-transparent" />
-      <div className="glass-panel relative w-full max-w-2xl space-y-4 rounded-3xl border border-border/90 bg-card/85 p-8 sm:p-10">
+      <div className="glass-panel relative w-full max-w-2xl space-y-4 rounded-[1.75rem] border border-border/90 bg-card/85 p-6 sm:rounded-3xl sm:p-10">
         <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Starting your download...</h1>
         <p className="text-sm leading-relaxed text-muted-foreground">
           If the download does not start, use the direct link below.
         </p>
         <a
-          className="inline-flex items-center justify-center rounded-full border border-primary/35 bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          className="inline-flex w-full items-center justify-center rounded-full border border-primary/35 bg-primary px-5 py-3 text-center text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto"
           href={fileUrl}
         >
           Download Vorn Voice for macOS

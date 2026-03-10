@@ -15,19 +15,19 @@ export const metadata: Metadata = {
 
 export default function ContextCursorPage() {
   return (
-    <main className="mesh-background relative min-h-screen overflow-hidden pb-8">
+    <main className="mesh-background relative min-h-screen overflow-x-clip pb-8">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-primary/12 via-primary/4 to-transparent" />
 
       <SiteHeader currentPath="/context-cursor" />
 
       <section className="relative px-4 pb-12 pt-10 sm:px-6 lg:px-8">
         <div className="mx-auto grid w-full max-w-[88rem] gap-6 xl:grid-cols-[1.1fr_0.9fr] xl:items-center">
-          <div className="space-y-6 rounded-[2rem] border border-border/90 bg-card/80 px-6 py-10 shadow-2xl shadow-black/35 backdrop-blur sm:px-8 lg:px-10 lg:py-12">
-            <Badge className="rounded-full border-border/90 bg-background/75 text-foreground hover:bg-background/75">
+          <div className="space-y-6 rounded-[1.75rem] border border-border/90 bg-card/80 px-5 py-8 shadow-2xl shadow-black/35 backdrop-blur sm:px-8 sm:py-10 lg:rounded-[2rem] lg:px-10 lg:py-12">
+            <Badge className="max-w-full rounded-full border-border/90 bg-background/75 text-foreground hover:bg-background/75">
               Coming soon
             </Badge>
             <div className="space-y-5">
-              <h1 className="max-w-3xl text-balance text-4xl font-semibold leading-[1.02] tracking-tight sm:text-6xl">
+              <h1 className="max-w-3xl text-balance text-[clamp(2.5rem,9vw,4rem)] font-semibold leading-[1.02] tracking-tight">
                 Context Cursor
               </h1>
               <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
@@ -39,7 +39,7 @@ export default function ContextCursorPage() {
                 prompt.
               </p>
             </div>
-            <Button asChild size="lg" className="rounded-full px-7 font-semibold sm:w-fit">
+            <Button asChild size="lg" className="w-full rounded-full px-7 font-semibold sm:w-fit">
               <Link href="/vorn-voice">
                 See the shipping product
                 <ArrowRight className="h-4 w-4" />

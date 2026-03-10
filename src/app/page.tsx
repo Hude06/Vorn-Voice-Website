@@ -9,7 +9,7 @@ import { ArrowRight, CheckCircle2, Download, Sparkles } from "lucide-react";
 
 export default function Home() {
   return (
-    <main className="mesh-background relative min-h-screen overflow-hidden pb-8">
+    <main className="mesh-background relative min-h-screen overflow-x-clip pb-8">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-primary/14 via-primary/4 to-transparent" />
       <div className="pointer-events-none absolute left-[-8rem] top-28 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
       <div className="pointer-events-none absolute right-[-6rem] top-[28rem] h-96 w-96 rounded-full bg-primary/8 blur-3xl" />
@@ -18,12 +18,12 @@ export default function Home() {
 
       <section className="relative px-4 pb-14 pt-10 sm:px-6 lg:px-8">
         <div className="mx-auto grid w-full max-w-[88rem] gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
-          <div className="space-y-7 rounded-[2rem] border border-border/90 bg-card/78 px-6 py-10 shadow-2xl shadow-black/35 backdrop-blur sm:px-8 lg:min-h-[34rem] lg:px-10 lg:py-12">
-            <Badge className="rounded-full border-border/90 bg-background/75 text-foreground hover:bg-background/75">
+          <div className="space-y-7 rounded-[1.75rem] border border-border/90 bg-card/78 px-5 py-8 shadow-2xl shadow-black/35 backdrop-blur sm:px-8 sm:py-10 lg:min-h-[34rem] lg:rounded-[2rem] lg:px-10 lg:py-12">
+            <Badge className="max-w-full rounded-full border-border/90 bg-background/75 text-foreground hover:bg-background/75">
               Full-stack workflow tools for developers
             </Badge>
             <div className="space-y-5">
-              <h1 className="max-w-4xl text-balance text-4xl font-semibold leading-[0.98] tracking-tight sm:text-6xl xl:text-7xl">
+              <h1 className="max-w-4xl text-balance text-[clamp(2.65rem,9vw,4.6rem)] font-semibold leading-[0.98] tracking-tight xl:text-7xl">
                 Vorn is a system of tools for modern software work.
               </h1>
               <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
@@ -36,7 +36,7 @@ export default function Home() {
               <Button
                 asChild
                 size="lg"
-                className="rounded-full px-8 text-base font-semibold shadow-lg shadow-primary/20"
+                className="w-full rounded-full px-8 text-base font-semibold shadow-lg shadow-primary/20 sm:w-auto"
               >
                 <Link href="/vorn-voice">
                   Explore Vorn Voice
@@ -47,7 +47,7 @@ export default function Home() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="rounded-full border-border/90 bg-transparent px-7 text-base"
+                className="w-full rounded-full border-border/90 bg-transparent px-7 text-base sm:w-auto"
               >
                 <Link href="/download">
                   <Download className="h-4 w-4" />
@@ -57,7 +57,7 @@ export default function Home() {
             </div>
           </div>
 
-          <Card className="glass-panel rounded-[2rem] border-border/90 bg-[#151515] py-0">
+          <Card className="glass-panel rounded-[1.75rem] border-border/90 bg-[#151515] py-0 lg:rounded-[2rem]">
             <CardHeader className="border-b border-border/80 py-6">
               <CardTitle className="text-2xl tracking-tight">How the system fits together</CardTitle>
             </CardHeader>
@@ -90,19 +90,19 @@ export default function Home() {
                 className="glass-panel flex h-full rounded-[1.75rem] border-border/90 bg-[#151515] py-0"
               >
                 <CardHeader className="space-y-4 border-b border-border/80 py-6">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
+                  <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="flex min-w-0 items-center gap-3">
                       <div className="rounded-2xl border border-primary/25 bg-primary/10 p-3 text-primary">
                         <Icon className="h-5 w-5" />
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <p className="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
                           {eyebrow}
                         </p>
                         <CardTitle className="mt-2 text-2xl tracking-tight">{name}</CardTitle>
                       </div>
                     </div>
-                    <Badge className="rounded-full border-border/80 bg-background/70 text-foreground hover:bg-background/70">
+                    <Badge className="max-w-full rounded-full border-border/80 bg-background/70 text-foreground hover:bg-background/70">
                       {status}
                     </Badge>
                   </div>
@@ -124,7 +124,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                    <Button asChild className="rounded-full px-5 font-semibold shadow-lg shadow-primary/20">
+                     <Button asChild className="w-full rounded-full px-5 font-semibold shadow-lg shadow-primary/20 sm:w-auto">
                       <Link href={href}>
                         Open page
                         <ArrowRight className="h-4 w-4" />
@@ -134,7 +134,7 @@ export default function Home() {
                       <Button
                         asChild
                         variant="outline"
-                        className="rounded-full border-border/90 bg-transparent"
+                         className="w-full rounded-full border-border/90 bg-transparent sm:w-auto"
                       >
                         <Link href="/download">Download now</Link>
                       </Button>
@@ -162,7 +162,7 @@ export default function Home() {
                 that foundation by adding richer context and more ways to turn intent into
                 finished work.
               </p>
-              <div className="grid gap-3 sm:grid-cols-3">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 <div className="rounded-2xl border border-border/80 bg-background/70 p-4">
                   <p className="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
                     Available now
@@ -196,14 +196,14 @@ export default function Home() {
                 rest of the system is built around.
               </p>
               <div className="flex flex-col gap-3 sm:flex-row">
-                <Button asChild size="lg" className="rounded-full px-6 font-semibold">
+                <Button asChild size="lg" className="w-full rounded-full px-6 font-semibold sm:w-auto">
                   <Link href="/vorn-voice">See the product page</Link>
                 </Button>
                 <Button
                   asChild
                   variant="outline"
                   size="lg"
-                  className="rounded-full border-border/90 bg-transparent px-6"
+                  className="w-full rounded-full border-border/90 bg-transparent px-6 sm:w-auto"
                 >
                   <Link href="/download">Download Vorn Voice</Link>
                 </Button>

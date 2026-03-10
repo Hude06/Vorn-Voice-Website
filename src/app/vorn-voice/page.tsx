@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 
 export default function VornVoicePage() {
   return (
-    <main className="mesh-background relative min-h-screen overflow-hidden pb-8">
+    <main className="mesh-background relative min-h-screen overflow-x-clip pb-8">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-primary/12 via-primary/4 to-transparent" />
       <div className="pointer-events-none absolute right-[-5rem] top-32 h-80 w-80 rounded-full bg-primary/12 blur-3xl" />
 
@@ -39,12 +39,12 @@ export default function VornVoicePage() {
 
       <section className="relative px-4 pb-8 pt-10 sm:px-6 lg:px-8">
         <div className="mx-auto grid w-full max-w-[88rem] gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
-          <div className="space-y-6 rounded-[2rem] border border-border/90 bg-card/80 px-6 py-10 shadow-2xl shadow-black/35 backdrop-blur sm:px-8 lg:px-10 lg:py-12">
-            <Badge className="rounded-full border-border/90 bg-background/75 text-foreground hover:bg-background/75">
+          <div className="space-y-6 rounded-[1.75rem] border border-border/90 bg-card/80 px-5 py-8 shadow-2xl shadow-black/35 backdrop-blur sm:px-8 sm:py-10 lg:rounded-[2rem] lg:px-10 lg:py-12">
+            <Badge className="max-w-full rounded-full border-border/90 bg-background/75 text-foreground hover:bg-background/75">
               Shipping now on macOS
             </Badge>
             <div className="space-y-5">
-              <h1 className="max-w-4xl text-balance text-4xl font-semibold leading-[1.02] tracking-tight sm:text-6xl xl:text-[4.5rem]">
+              <h1 className="max-w-4xl text-balance text-[clamp(2.6rem,9vw,4.4rem)] font-semibold leading-[1.02] tracking-tight xl:text-[4.5rem]">
                 Speak ideas. Ship code.
                 <span className="text-primary"> Keep your hands in flow.</span>
               </h1>
@@ -57,7 +57,7 @@ export default function VornVoicePage() {
               <Button
                 asChild
                 size="lg"
-                className="rounded-full px-8 text-base font-semibold shadow-lg shadow-primary/20"
+                className="w-full rounded-full px-8 text-base font-semibold shadow-lg shadow-primary/20 sm:w-auto"
               >
                 <Link href={downloadUrl}>
                   <Download className="h-4 w-4" />
@@ -68,7 +68,7 @@ export default function VornVoicePage() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="rounded-full border-border/90 bg-transparent px-7 text-base"
+                className="w-full rounded-full border-border/90 bg-transparent px-7 text-base sm:w-auto"
               >
                 <Link href="#examples">
                   See examples
@@ -78,7 +78,7 @@ export default function VornVoicePage() {
             </div>
           </div>
 
-          <Card className="glass-panel rounded-[2rem] border-border/90 bg-[#151515] py-0">
+          <Card className="glass-panel rounded-[1.75rem] border-border/90 bg-[#151515] py-0 lg:rounded-[2rem]">
             <CardHeader className="border-b border-border/80 py-6">
               <CardTitle className="font-mono text-sm uppercase tracking-[0.18em] text-muted-foreground">
                 Typical workflow
@@ -109,13 +109,13 @@ export default function VornVoicePage() {
       </section>
 
       <section className="px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto grid w-full max-w-[88rem] gap-4 md:grid-cols-3">
+        <div className="mx-auto grid w-full max-w-[88rem] gap-4 md:grid-cols-2 xl:grid-cols-3">
           <Card className="glass-panel rounded-[1.75rem] border-border/90 bg-[#151515] py-0">
             <CardContent className="py-6">
               <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
                 Custom hotkeys
               </p>
-              <p className="mt-2 text-xl font-semibold">Pick the shortcut that fits your flow</p>
+              <p className="mt-2 text-lg font-semibold sm:text-xl">Pick the shortcut that fits your flow</p>
             </CardContent>
           </Card>
           <Card className="glass-panel rounded-[1.75rem] border-border/90 bg-[#151515] py-0">
@@ -123,7 +123,7 @@ export default function VornVoicePage() {
               <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
                 Works where you work
               </p>
-              <p className="mt-2 text-xl font-semibold">Dictate into editors, docs, chat, and issue trackers</p>
+              <p className="mt-2 text-lg font-semibold sm:text-xl">Dictate into editors, docs, chat, and issue trackers</p>
             </CardContent>
           </Card>
           <Card className="glass-panel rounded-[1.75rem] border-border/90 bg-[#151515] py-0">
@@ -131,7 +131,7 @@ export default function VornVoicePage() {
               <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
                 Local-first transcription
               </p>
-              <p className="mt-2 text-xl font-semibold">Fast on-device speech-to-text without breaking focus</p>
+              <p className="mt-2 text-lg font-semibold sm:text-xl">Fast on-device speech-to-text without breaking focus</p>
             </CardContent>
           </Card>
         </div>
@@ -178,7 +178,7 @@ export default function VornVoicePage() {
                   <CardTitle className="text-lg">{item.title}</CardTitle>
                 </CardHeader>
                 <CardContent className="pb-6">
-                  <pre className="overflow-x-auto rounded-xl border border-border/90 bg-background/75 p-4 font-mono text-xs leading-6 text-muted-foreground">
+                  <pre className="overflow-x-auto rounded-xl border border-border/90 bg-background/75 p-3 font-mono text-[11px] leading-6 text-muted-foreground sm:p-4 sm:text-xs">
                     <code>{item.snippet}</code>
                   </pre>
                 </CardContent>
@@ -212,7 +212,7 @@ export default function VornVoicePage() {
                 you already work.
               </p>
               <div className="flex flex-col gap-3 sm:flex-row">
-                <Button asChild size="lg" className="rounded-full text-base sm:w-auto">
+                <Button asChild size="lg" className="w-full rounded-full text-base sm:w-auto">
                   <Link href={downloadUrl}>
                     <Download className="h-4 w-4" />
                     Download Vorn Voice
@@ -222,7 +222,7 @@ export default function VornVoicePage() {
                   asChild
                   variant="outline"
                   size="lg"
-                  className="rounded-full border-border/90 bg-transparent"
+                  className="w-full rounded-full border-border/90 bg-transparent sm:w-auto"
                 >
                   <Link href="/">Back to overview</Link>
                 </Button>
