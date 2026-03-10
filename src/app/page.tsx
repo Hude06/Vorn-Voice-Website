@@ -1,290 +1,219 @@
+import Link from "next/link";
+
+import { SiteFooter, SiteHeader } from "@/components/site/site-chrome";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Activity,
-  ArrowRight,
-  Bolt,
-  CheckCircle2,
-  Command,
-  Download,
-  Gauge,
-  Mic2,
-  Shield,
-  Sparkles,
-  WandSparkles,
-} from "lucide-react";
-
-const downloadUrl = "/download";
-
-const featureList = [
-  {
-    icon: Command,
-    title: "Push-to-talk hotkeys",
-    body: "Hold your global shortcut, speak naturally, and release to transcribe into any app.",
-  },
-  {
-    icon: Bolt,
-    title: "Local whisper models",
-    body: "Start with bundled base.en, then install tiny.en for speed or small.en for higher accuracy.",
-  },
-  {
-    icon: WandSparkles,
-    title: "Auto-paste flow",
-    body: "Drop dictated text directly into the focused app while keeping clipboard restore optional.",
-  },
-  {
-    icon: Shield,
-    title: "Guided setup checks",
-    body: "Get clear runtime diagnostics and permission health before your first dictation session.",
-  },
-  {
-    icon: Gauge,
-    title: "Weekly speaking stats",
-    body: "Track words per minute and rolling output to measure gains over time.",
-  },
-  {
-    icon: Activity,
-    title: "Automatic updates",
-    body: "Packaged app builds can fetch updates in the background and install on restart.",
-  },
-];
-
-const useCases = [
-  {
-    title: "Quick PR replies",
-    snippet:
-      "Hold Shift + Command + R\n\"Looks good. I tested the fallback path and it now recovers correctly.\"",
-  },
-  {
-    title: "Issue triage notes",
-    snippet:
-      "Speak naturally, release hotkey\nVorn Voice transcribes and pastes into Linear, GitHub, or Slack.",
-  },
-  {
-    title: "Docs while coding",
-    snippet:
-      "Keep hands on keyboard\nDictate implementation notes as you navigate code.",
-  },
-];
+import { products, workflowPillars } from "@/lib/site-content";
+import { ArrowRight, CheckCircle2, Download, Sparkles } from "lucide-react";
 
 export default function Home() {
   return (
-    <main className="mesh-background relative min-h-screen overflow-hidden">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-primary/12 via-primary/4 to-transparent" />
-      <section className="relative mx-auto w-full max-w-6xl px-6 pb-14 pt-8 sm:px-10">
-        <nav className="glass-panel animate-rise flex items-center justify-between rounded-3xl border border-border/90 bg-card/85 px-4 py-3 sm:px-6">
-          <div className="flex items-center gap-2.5 text-sm font-semibold tracking-wide">
-            <Mic2 className="h-4 w-4 text-primary" />
-            Vorn Voice
-          </div>
-          <Badge className="rounded-full border-primary/35 bg-primary/10 text-primary hover:bg-primary/10">
-            macOS app
-          </Badge>
-        </nav>
+    <main className="mesh-background relative min-h-screen overflow-hidden pb-8">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-primary/14 via-primary/4 to-transparent" />
+      <div className="pointer-events-none absolute left-[-8rem] top-28 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
+      <div className="pointer-events-none absolute right-[-6rem] top-[28rem] h-96 w-96 rounded-full bg-primary/8 blur-3xl" />
 
-        <div className="relative mt-12 overflow-hidden rounded-[2rem] border border-border/90 bg-card/85 px-6 py-12 shadow-2xl shadow-black/40 sm:px-12">
-          <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/18 blur-3xl" />
-          <div className="absolute -bottom-24 -left-14 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+      <SiteHeader currentPath="/" />
 
-          <div className="relative grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
-            <div className="space-y-6">
-              <Badge className="animate-rise rounded-full border-border/80 bg-background/75 text-foreground hover:bg-background/75">
-                Local-first dictation for developers
-              </Badge>
-              <h1 className="animate-rise-delay text-balance text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
-                Speak ideas. Ship code.
-                <span className="text-primary"> No context switching.</span>
+      <section className="relative px-4 pb-14 pt-10 sm:px-6 lg:px-8">
+        <div className="mx-auto grid w-full max-w-[88rem] gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+          <div className="space-y-7 rounded-[2rem] border border-border/90 bg-card/78 px-6 py-10 shadow-2xl shadow-black/35 backdrop-blur sm:px-8 lg:min-h-[34rem] lg:px-10 lg:py-12">
+            <Badge className="rounded-full border-border/90 bg-background/75 text-foreground hover:bg-background/75">
+              Full-stack workflow tools for developers
+            </Badge>
+            <div className="space-y-5">
+              <h1 className="max-w-4xl text-balance text-4xl font-semibold leading-[0.98] tracking-tight sm:text-6xl xl:text-7xl">
+                Vorn is a system of tools for modern software work.
               </h1>
-              <p className="animate-rise-delay-2 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-                Vorn Voice turns your voice into clean text with a push-to-talk hotkey,
-                local whisper models, and instant paste into your current app.
+              <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
+                Start with voice input today, then grow into cursor-aware context and
+                parallel coding workflows built to reduce friction between intent and
+                execution.
               </p>
-              <div className="animate-rise-delay-2 flex flex-col gap-3 sm:flex-row">
-                <Button
-                  asChild
-                  size="lg"
-                  className="rounded-full px-8 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25"
-                >
-                  <a href={downloadUrl}>
-                    <Download className="mr-2 h-4 w-4" />
-                    Download for macOS
-                  </a>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button
+                asChild
+                size="lg"
+                className="rounded-full px-8 text-base font-semibold shadow-lg shadow-primary/20"
+              >
+                <Link href="/vorn-voice">
+                  Explore Vorn Voice
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="rounded-full border-border/90 bg-transparent px-7 text-base"
+              >
+                <Link href="/download">
+                  <Download className="h-4 w-4" />
+                  Download for macOS
+                </Link>
+              </Button>
+            </div>
+          </div>
+
+          <Card className="glass-panel rounded-[2rem] border-border/90 bg-[#151515] py-0">
+            <CardHeader className="border-b border-border/80 py-6">
+              <CardTitle className="text-2xl tracking-tight">How the system fits together</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4 py-6">
+              {workflowPillars.map(({ icon: Icon, title, body }) => (
+                <div key={title} className="rounded-2xl border border-border/80 bg-background/70 p-5">
+                  <div className="flex items-center gap-3">
+                    <Icon className="h-4 w-4 text-primary" />
+                    <p className="font-semibold text-foreground">{title}</p>
+                  </div>
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground">{body}</p>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      <section className="px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[88rem] space-y-6">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Three focused products, one direction</h2>
+          </div>
+
+          <div className="grid gap-4 xl:grid-cols-3">
+            {products.map(({ href, icon: Icon, name, eyebrow, summary, status, details }) => (
+              <Card
+                key={name}
+                className="glass-panel flex h-full rounded-[1.75rem] border-border/90 bg-[#151515] py-0"
+              >
+                <CardHeader className="space-y-4 border-b border-border/80 py-6">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="rounded-2xl border border-primary/25 bg-primary/10 p-3 text-primary">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <p className="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                          {eyebrow}
+                        </p>
+                        <CardTitle className="mt-2 text-2xl tracking-tight">{name}</CardTitle>
+                      </div>
+                    </div>
+                    <Badge className="rounded-full border-border/80 bg-background/70 text-foreground hover:bg-background/70">
+                      {status}
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex flex-1 flex-col justify-between gap-8 py-6">
+                  <div className="space-y-5">
+                    <p className="text-sm leading-7 text-muted-foreground sm:text-base">
+                      {summary}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {details.map((detail) => (
+                        <Badge
+                          key={detail}
+                          className="rounded-full border-border/80 bg-background/65 text-muted-foreground hover:bg-background/65"
+                        >
+                          {detail}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <Button asChild className="rounded-full px-5 font-semibold shadow-lg shadow-primary/20">
+                      <Link href={href}>
+                        Open page
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                    {href === "/vorn-voice" ? (
+                      <Button
+                        asChild
+                        variant="outline"
+                        className="rounded-full border-border/90 bg-transparent"
+                      >
+                        <Link href="/download">Download now</Link>
+                      </Button>
+                    ) : null}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto grid w-full max-w-[88rem] gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+          <Card className="glass-panel rounded-[1.75rem] border-primary/30 bg-[#151515] py-0">
+            <CardHeader className="border-b border-border/80 py-6">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-primary" />
+                <CardTitle className="text-2xl tracking-tight">What ships first</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-5 py-6 text-muted-foreground">
+              <p className="max-w-2xl leading-7">
+                Vorn Voice is the first complete product in the system. It is the clearest
+                expression of the Vorn approach: reduce friction, keep context, and make the
+                interface feel closer to intent.
+              </p>
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div className="rounded-2xl border border-border/80 bg-background/70 p-4">
+                  <p className="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                    Voice input
+                  </p>
+                  <p className="mt-2 text-lg font-semibold text-foreground">Shipping</p>
+                </div>
+                <div className="rounded-2xl border border-border/80 bg-background/70 p-4">
+                  <p className="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                    Cursor context
+                  </p>
+                  <p className="mt-2 text-lg font-semibold text-foreground">Next</p>
+                </div>
+                <div className="rounded-2xl border border-border/80 bg-background/70 p-4">
+                  <p className="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                    Parallel terminals
+                  </p>
+                  <p className="mt-2 text-lg font-semibold text-foreground">Then</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="glass-panel rounded-[1.75rem] border-border/90 bg-[#151515] py-0">
+            <CardHeader className="border-b border-border/80 py-6">
+              <CardTitle className="text-2xl tracking-tight">Start with the tool you can use now</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5 py-6">
+              <p className="text-sm leading-7 text-muted-foreground sm:text-base">
+                If you are here today, the fastest way into the Vorn ecosystem is Vorn Voice.
+                It is ready now and already captures the kind of low-friction interaction the
+                rest of the system is built around.
+              </p>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Button asChild size="lg" className="rounded-full px-6 font-semibold">
+                  <Link href="/vorn-voice">See the product page</Link>
                 </Button>
                 <Button
                   asChild
                   variant="outline"
                   size="lg"
-                  className="rounded-full border-border/90 bg-transparent px-7 text-base"
+                  className="rounded-full border-border/90 bg-transparent px-6"
                 >
-                  <a href="#examples">
-                    See examples
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </a>
+                  <Link href="/download">Download Vorn Voice</Link>
                 </Button>
               </div>
-            </div>
-
-            <Card className="glass-panel animate-rise-delay-2 rounded-3xl border border-border/90 bg-[#151515]">
-              <CardHeader>
-                <CardTitle className="font-mono text-sm uppercase tracking-[0.18em] text-muted-foreground">
-                  Typical workflow
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 text-sm">
-                <div className="rounded-2xl border border-border/90 bg-background/70 p-4">
-                  <p className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
-                    Step 1
-                  </p>
-                  <p className="mt-1">Hold your shortcut: Shift + Command + R</p>
-                </div>
-                <div className="rounded-2xl border border-border/90 bg-background/70 p-4">
-                  <p className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
-                    Step 2
-                  </p>
-                  <p className="mt-1">Speak naturally for PR comments, docs, and updates</p>
-                </div>
-                <div className="rounded-2xl border border-border/90 bg-background/70 p-4">
-                  <p className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
-                    Step 3
-                  </p>
-                  <p className="mt-1">Release and let Vorn Voice transcribe + paste instantly</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+            </CardContent>
+          </Card>
         </div>
-
-        <section className="mt-14 grid gap-4 md:grid-cols-3">
-          <Card className="glass-panel rounded-2xl border-border/90 bg-[#151515]">
-            <CardContent className="pt-6">
-              <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
-                Default Hotkey
-              </p>
-              <p className="mt-2 text-xl font-semibold">Shift + Command + R</p>
-            </CardContent>
-          </Card>
-          <Card className="glass-panel rounded-2xl border-border/90 bg-[#151515]">
-            <CardContent className="pt-6">
-              <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
-                Models
-              </p>
-              <p className="mt-2 text-xl font-semibold">base.en bundled, tiny.en + small.en optional</p>
-            </CardContent>
-          </Card>
-          <Card className="glass-panel rounded-2xl border-border/90 bg-[#151515]">
-            <CardContent className="pt-6">
-              <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
-                Update cadence
-              </p>
-              <p className="mt-2 text-xl font-semibold">Auto-check every 6 hours</p>
-            </CardContent>
-          </Card>
-        </section>
-
-        <section className="mt-16" id="features">
-          <div className="mb-6 flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-primary" />
-            <h2 className="text-2xl font-semibold tracking-tight">Built for daily engineering flow</h2>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {featureList.map(({ icon: Icon, title, body }) => (
-              <Card key={title} className="glass-panel rounded-2xl border-border/90 bg-[#151515]">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Icon className="h-4 w-4 text-primary" />
-                    {title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm leading-6 text-muted-foreground">{body}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-16" id="examples">
-          <div className="mb-6 flex items-center gap-2">
-            <CheckCircle2 className="h-4 w-4 text-primary" />
-            <h2 className="text-2xl font-semibold tracking-tight">How it feels in practice</h2>
-          </div>
-          <div className="grid gap-4 lg:grid-cols-3">
-            {useCases.map((item) => (
-              <Card key={item.title} className="glass-panel rounded-2xl border-border/90 bg-[#151515]">
-                <CardHeader>
-                  <CardTitle className="text-lg">{item.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <pre className="overflow-x-auto rounded-xl border border-border/90 bg-background/75 p-4 font-mono text-xs leading-6 text-muted-foreground">
-                    <code>{item.snippet}</code>
-                  </pre>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-16 grid gap-6 lg:grid-cols-[1fr_1.1fr] lg:items-start">
-          <Card className="glass-panel rounded-2xl border border-primary/35 bg-[#151515]">
-            <CardHeader>
-              <CardTitle className="text-2xl tracking-tight">Ready to type with your voice?</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-5">
-              <p className="text-muted-foreground">
-                Install the macOS app, pick your preferred model, and start dictating where
-                you already work.
-              </p>
-              <Button asChild size="lg" className="w-full rounded-full text-base sm:w-auto">
-                <a href={downloadUrl}>
-                  <Download className="mr-2 h-4 w-4" />
-                  Download Vorn Voice
-                </a>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="glass-panel rounded-2xl border border-border/90 bg-[#151515]">
-            <CardHeader>
-              <CardTitle className="text-2xl tracking-tight">FAQ</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="q1">
-                  <AccordionTrigger>Does it run locally?</AccordionTrigger>
-                  <AccordionContent>
-                    Yes. Vorn Voice is designed around local whisper model workflows and local
-                    runtime checks.
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="q2">
-                  <AccordionTrigger>Can I change the hotkey?</AccordionTrigger>
-                  <AccordionContent>
-                    Absolutely. Capture and validate your own global shortcut inside settings.
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="q3">
-                  <AccordionTrigger>What happens after I speak?</AccordionTrigger>
-                  <AccordionContent>
-                    Release your hotkey, transcription runs, and the result can auto-paste into
-                    the active app.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </CardContent>
-          </Card>
-        </section>
-
-        <footer className="mt-16 border-t border-border/90 py-8 text-sm text-muted-foreground">
-          <p>Vorn Voice - speak naturally, write everywhere.</p>
-        </footer>
       </section>
+
+      <SiteFooter />
     </main>
   );
 }

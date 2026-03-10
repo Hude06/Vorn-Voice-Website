@@ -13,9 +13,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Vorn Voice | Speak Fast, Ship Faster",
+  title: "Vorn | Tools for Software Work",
   description:
-    "Vorn Voice is a local-first macOS dictation app with push-to-talk hotkeys, whisper models, and instant paste anywhere.",
+    "Vorn is a system of tools for software work, starting with Vorn Voice and expanding into cursor-aware context and parallel coding workflows.",
 };
 
 export default function RootLayout({
