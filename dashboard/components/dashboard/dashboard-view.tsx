@@ -9,6 +9,7 @@ import { DownloadsChart } from "@/components/dashboard/downloads-chart";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { RecentDownloads } from "@/components/dashboard/recent-downloads";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DashboardMetrics } from "@/lib/metrics";
 import { formatNumber } from "@/lib/utils";
@@ -21,38 +22,79 @@ type DashboardViewProps = {
 
 export function DashboardView({ initialMetrics, currentTarget, currentTargetError }: DashboardViewProps) {
   const [metrics, setMetrics] = useState(initialMetrics);
+  const [activeReset, setActiveReset] = useState<"today" | "all" | null>(null);
+  const [resetError, setResetError] = useState<string | null>(null);
 
   useEffect(() => {
+    void refreshMetrics();
+  }, []);
+
+  async function refreshMetrics() {
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     if (!timeZone) {
       return;
     }
 
-    const controller = new AbortController();
-
-    void fetch(`/api/metrics?timeZone=${encodeURIComponent(timeZone)}`, {
-      cache: "no-store",
-      signal: controller.signal,
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          throw new Error(`Failed to load metrics (${response.status})`);
-        }
-
-        const nextMetrics = (await response.json()) as DashboardMetrics;
-        setMetrics(nextMetrics);
-      })
-      .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === "AbortError") {
-          return;
-        }
-
-        console.error("Failed to refresh dashboard metrics", error);
+    try {
+      const response = await fetch(`/api/metrics?timeZone=${encodeURIComponent(timeZone)}`, {
+        cache: "no-store",
       });
 
-    return () => controller.abort();
-  }, []);
+      if (!response.ok) {
+        throw new Error(`Failed to load metrics (${response.status})`);
+      }
+
+      const nextMetrics = (await response.json()) as DashboardMetrics;
+      setMetrics(nextMetrics);
+    } catch (error: unknown) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
+
+      console.error("Failed to refresh dashboard metrics", error);
+    }
+  }
+
+  async function handleReset(scope: "today" | "all") {
+    const confirmed = window.confirm(
+      scope === "today"
+        ? `Clear all downloads recorded today in ${metrics.timeZone}?`
+        : "Clear every recorded download from the dashboard? This cannot be undone.",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setActiveReset(scope);
+    setResetError(null);
+
+    try {
+      const response = await fetch("/api/metrics/reset", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          scope,
+          timeZone: metrics.timeZone,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to reset metrics (${response.status})`);
+      }
+
+      const result = (await response.json()) as { metrics: DashboardMetrics };
+      setMetrics(result.metrics);
+    } catch (error) {
+      console.error("Failed to reset dashboard metrics", error);
+      setResetError("Could not clear download data. Please try again.");
+    } finally {
+      setActiveReset(null);
+    }
+  }
 
   const targetValue = currentTarget ? "Live" : "Check source";
   const targetHint = currentTarget ?? currentTargetError ?? "Update metadata could not be resolved.";
@@ -153,14 +195,42 @@ export function DashboardView({ initialMetrics, currentTarget, currentTargetErro
 
           <Card className="panel-glow h-full">
             <CardHeader>
-              <CardTitle>Quick view</CardTitle>
-              <CardDescription>A few simple markers for the current deployment.</CardDescription>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <CardTitle>Quick view</CardTitle>
+                  <CardDescription>A few simple markers for the current deployment.</CardDescription>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={activeReset !== null}
+                    onClick={() => void handleReset("today")}
+                  >
+                    {activeReset === "today" ? "Clearing..." : "Clear today"}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    disabled={activeReset !== null}
+                    onClick={() => void handleReset("all")}
+                  >
+                    {activeReset === "all" ? "Clearing..." : "Clear all-time"}
+                  </Button>
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <QuickStat label="Last 30 days" value={formatNumber(metrics.downloadsLast30Days)} />
               <QuickStat label="Last 7 days" value={formatNumber(metrics.downloadsLast7Days)} />
               <QuickStat label="Unique in 30 days" value={formatNumber(metrics.uniquesLast30Days)} />
               <QuickStat label="Recent events shown" value={formatNumber(metrics.recentDownloads.length)} />
+
+              {resetError ? (
+                <div className="rounded-[1.25rem] border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+                  {resetError}
+                </div>
+              ) : null}
 
               <div className="rounded-[1.4rem] border border-primary/15 bg-primary/8 p-4 text-sm leading-6 text-muted-foreground">
                 <div className="mb-2 inline-flex items-center gap-2 text-sm font-medium text-primary">

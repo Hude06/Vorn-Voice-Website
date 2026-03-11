@@ -149,6 +149,28 @@ export function recordDownloadEvent(input: {
   });
 }
 
+export function clearTodaysDownloads(options: { timeZone?: string } = {}) {
+  const db = getDb();
+  const timeZone = resolveDashboardTimeZone(options.timeZone);
+  const { startUtc, endUtc } = getLocalDayUtcRange(timeZone);
+
+  return db
+    .prepare(
+      `DELETE FROM download_events
+      WHERE created_at >= @startUtc
+        AND created_at < @endUtc`,
+    )
+    .run({
+      startUtc: formatSqliteTimestamp(startUtc),
+      endUtc: formatSqliteTimestamp(endUtc),
+    }).changes;
+}
+
+export function clearAllDownloads() {
+  const db = getDb();
+  return db.prepare("DELETE FROM download_events").run().changes;
+}
+
 function hashIp(ipAddress: string | null) {
   if (!ipAddress) {
     return null;
@@ -274,4 +296,78 @@ function parseSqliteTimestamp(value: string) {
   const [hours, minutes, seconds] = timePart.split(":").map(Number);
 
   return new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds ?? 0));
+}
+
+function getLocalDayUtcRange(timeZone: string) {
+  const todayKey = getDateKey(new Date(), timeZone);
+  const [year, month, day] = todayKey.split("-").map(Number);
+
+  return {
+    startUtc: getUtcInstantForLocalTime({ year, month, day, hour: 0 }, timeZone),
+    endUtc: getUtcInstantForLocalTime(getNextDay({ year, month, day }), timeZone),
+  };
+}
+
+function getNextDay({ year, month, day }: { year: number; month: number; day: number }) {
+  const value = new Date(Date.UTC(year, month - 1, day));
+  value.setUTCDate(value.getUTCDate() + 1);
+
+  return {
+    year: value.getUTCFullYear(),
+    month: value.getUTCMonth() + 1,
+    day: value.getUTCDate(),
+    hour: 0,
+  };
+}
+
+function getUtcInstantForLocalTime(
+  localTime: { year: number; month: number; day: number; hour: number },
+  timeZone: string,
+) {
+  const utcGuess = Date.UTC(localTime.year, localTime.month - 1, localTime.day, localTime.hour);
+  const offsetMinutes = getTimeZoneOffsetMinutes(new Date(utcGuess), timeZone);
+
+  return new Date(utcGuess - offsetMinutes * 60_000);
+}
+
+function getTimeZoneOffsetMinutes(value: Date, timeZone: string) {
+  const zone = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    timeZoneName: "shortOffset",
+    hour: "2-digit",
+    minute: "2-digit",
+  })
+    .formatToParts(value)
+    .find((part) => part.type === "timeZoneName")?.value;
+
+  if (!zone) {
+    throw new Error(`Failed to resolve timezone offset for ${timeZone}`);
+  }
+
+  if (zone === "GMT") {
+    return 0;
+  }
+
+  const match = zone.match(/^GMT([+-])(\d{1,2})(?::(\d{2}))?$/);
+
+  if (!match) {
+    throw new Error(`Unsupported timezone offset format: ${zone}`);
+  }
+
+  const sign = match[1] === "+" ? 1 : -1;
+  const hours = Number(match[2]);
+  const minutes = Number(match[3] ?? "0");
+
+  return sign * (hours * 60 + minutes);
+}
+
+function formatSqliteTimestamp(value: Date) {
+  const year = value.getUTCFullYear();
+  const month = `${value.getUTCMonth() + 1}`.padStart(2, "0");
+  const day = `${value.getUTCDate()}`.padStart(2, "0");
+  const hours = `${value.getUTCHours()}`.padStart(2, "0");
+  const minutes = `${value.getUTCMinutes()}`.padStart(2, "0");
+  const seconds = `${value.getUTCSeconds()}`.padStart(2, "0");
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
