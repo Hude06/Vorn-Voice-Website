@@ -109,8 +109,8 @@ export function DownloadOriginsMap({
           </div>
         ) : (
           <div className="rounded-[1.6rem] border border-dashed border-white/10 bg-black/10 px-4 py-8 text-sm leading-6 text-muted-foreground">
-            No country headers have been recorded yet. Existing download rows still work; the map will start filling as
-            new downloads arrive with proxy geo headers.
+            No country data has been recorded yet. Existing download rows still work; the map will start filling as new
+            downloads arrive.
           </div>
         )}
 

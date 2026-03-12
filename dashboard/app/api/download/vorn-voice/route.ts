@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { resolveCountryCode } from "@/lib/country-lookup";
 import { normalizeCountryCode } from "@/lib/geo";
 import { getDownloadMetadataUrl, resolveDownloadUrl } from "@/lib/download-source";
 import { recordDownloadEvent } from "@/lib/metrics";
@@ -8,23 +9,39 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
+  const ipAddress = getClientIp(request);
+  const requestHost = request.headers.get("x-forwarded-host") ?? request.headers.get("host");
+  const referer = request.headers.get("referer");
+  const userAgent = request.headers.get("user-agent");
+  const [destinationResult, countryCodeResult] = await Promise.allSettled([
+    resolveDownloadUrl(),
+    resolveCountryCode({
+      headerCountryCode: getClientCountryCodeFromHeaders(request),
+      ipAddress,
+    }),
+  ]);
   let destinationUrl = getDownloadMetadataUrl();
+  let countryCode: string | null = null;
 
-  try {
-    destinationUrl = await resolveDownloadUrl();
-  } catch (error) {
-    console.error("Failed to resolve download URL", error);
+  if (destinationResult.status === "fulfilled") {
+    destinationUrl = destinationResult.value;
+  } else {
+    console.error("Failed to resolve download URL", destinationResult.reason);
+  }
+
+  if (countryCodeResult.status === "fulfilled") {
+    countryCode = countryCodeResult.value;
   }
 
   try {
     recordDownloadEvent({
       productKey: "vorn_voice",
       destinationUrl,
-      requestHost: request.headers.get("x-forwarded-host") ?? request.headers.get("host"),
-      referer: request.headers.get("referer"),
-      userAgent: request.headers.get("user-agent"),
-      ipAddress: getClientIp(request),
-      countryCode: getClientCountryCode(request),
+      requestHost,
+      referer,
+      userAgent,
+      ipAddress,
+      countryCode,
     });
   } catch (error) {
     console.error("Failed to record download event", error);
@@ -43,7 +60,7 @@ function getClientIp(request: Request) {
   return request.headers.get("x-real-ip");
 }
 
-function getClientCountryCode(request: Request) {
+function getClientCountryCodeFromHeaders(request: Request) {
   return normalizeCountryCode(
     request.headers.get("x-geo-country-code") ??
       request.headers.get("cf-ipcountry") ??
