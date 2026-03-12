@@ -6,6 +6,7 @@ Private React + Next.js dashboard for first-party Vorn Voice download tracking.
 
 - records direct-download starts in SQLite before redirecting to the latest DMG
 - serves a private dashboard with modern cards and charts
+- shows a small country-level origin map when the proxy forwards geo headers
 - exposes a metrics API for future extensions
 - expects nginx basic auth in front of the dashboard routes
 
@@ -38,3 +39,9 @@ Use `http://localhost:3000/api/download/vorn-voice` to test the tracked redirect
 
 See `dashboard/deploy/nginx/stats.judemakes.dev.conf` for the nginx example.
 See `dashboard/deploy/systemd/vorn-stats.service` for a matching systemd unit.
+
+## Geo map notes
+
+- The map reads country codes from common upstream headers such as `CF-IPCountry`, `X-Vercel-IP-Country`, `CloudFront-Viewer-Country`, or a custom `X-Geo-Country-Code`.
+- Existing rows stay valid after deploy. Older downloads without `country_code` still appear in totals, charts, and recent activity; they simply do not show on the map.
+- If your nginx host has GeoIP2 configured, pass the country code through as `X-Geo-Country-Code` to populate the map for new downloads.

@@ -5,6 +5,10 @@ import Database from "better-sqlite3";
 
 let database: Database.Database | undefined;
 
+type TableInfoRow = {
+  name: string;
+};
+
 function getDatabasePath() {
   const configuredPath = process.env.DASHBOARD_DB_PATH;
 
@@ -39,6 +43,23 @@ function initialize(db: Database.Database) {
 
     CREATE INDEX IF NOT EXISTS idx_download_events_ip_hash
       ON download_events (ip_hash);
+  `);
+
+  migrateDownloadEventsTable(db);
+}
+
+function migrateDownloadEventsTable(db: Database.Database) {
+  const existingColumns = new Set(
+    db.prepare<[], TableInfoRow>("PRAGMA table_info(download_events)").all().map((column) => column.name),
+  );
+
+  if (!existingColumns.has("country_code")) {
+    db.exec("ALTER TABLE download_events ADD COLUMN country_code TEXT");
+  }
+
+  db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_download_events_country_code
+      ON download_events (country_code);
   `);
 }
 

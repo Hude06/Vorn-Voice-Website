@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Activity, Database, ShieldCheck, Sparkles } from "lucide-react";
 
 import { DownloadsChart } from "@/components/dashboard/downloads-chart";
+import { DownloadOriginsMap } from "@/components/dashboard/download-origins-map";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { RecentDownloads } from "@/components/dashboard/recent-downloads";
 import { Badge } from "@/components/ui/badge";
@@ -184,63 +185,72 @@ export function DashboardView({ initialMetrics, currentTarget, currentTargetErro
               />
               <InfoPanel
                 title="Local time"
-                body="Today and the 30-day chart now follow the timezone of the person viewing the dashboard."
+                body="Today, the 30-day chart, and recent activity all follow the timezone of the person viewing the dashboard."
               />
             </CardContent>
           </Card>
         </section>
 
         <section className="grid gap-4 xl:grid-cols-[1.45fr_0.95fr]">
-          <RecentDownloads items={metrics.recentDownloads} />
+          <RecentDownloads items={metrics.recentDownloads} timeZone={metrics.timeZone} />
 
-          <Card className="panel-glow h-full">
-            <CardHeader>
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                  <CardTitle>Quick view</CardTitle>
-                  <CardDescription>A few simple markers for the current deployment.</CardDescription>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={activeReset !== null}
-                    onClick={() => void handleReset("today")}
-                  >
-                    {activeReset === "today" ? "Clearing..." : "Clear today"}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    disabled={activeReset !== null}
-                    onClick={() => void handleReset("all")}
-                  >
-                    {activeReset === "all" ? "Clearing..." : "Clear all-time"}
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <QuickStat label="Last 30 days" value={formatNumber(metrics.downloadsLast30Days)} />
-              <QuickStat label="Last 7 days" value={formatNumber(metrics.downloadsLast7Days)} />
-              <QuickStat label="Unique in 30 days" value={formatNumber(metrics.uniquesLast30Days)} />
-              <QuickStat label="Recent events shown" value={formatNumber(metrics.recentDownloads.length)} />
+          <div className="grid gap-4">
+            <DownloadOriginsMap
+              items={metrics.originSummary}
+              downloadsWithCountryLast30Days={metrics.downloadsWithCountryLast30Days}
+              downloadsWithoutCountryLast30Days={metrics.downloadsWithoutCountryLast30Days}
+            />
 
-              {resetError ? (
-                <div className="rounded-[1.25rem] border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-100">
-                  {resetError}
+            <Card className="panel-glow h-full">
+              <CardHeader>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <CardTitle>Quick view</CardTitle>
+                    <CardDescription>A few simple markers for the current deployment.</CardDescription>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={activeReset !== null}
+                      onClick={() => void handleReset("today")}
+                    >
+                      {activeReset === "today" ? "Clearing..." : "Clear today"}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      disabled={activeReset !== null}
+                      onClick={() => void handleReset("all")}
+                    >
+                      {activeReset === "all" ? "Clearing..." : "Clear all-time"}
+                    </Button>
+                  </div>
                 </div>
-              ) : null}
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <QuickStat label="Last 30 days" value={formatNumber(metrics.downloadsLast30Days)} />
+                <QuickStat label="Last 7 days" value={formatNumber(metrics.downloadsLast7Days)} />
+                <QuickStat label="Unique in 30 days" value={formatNumber(metrics.uniquesLast30Days)} />
+                <QuickStat label="Recent events shown" value={formatNumber(metrics.recentDownloads.length)} />
 
-              <div className="rounded-[1.4rem] border border-primary/15 bg-primary/8 p-4 text-sm leading-6 text-muted-foreground">
-                <div className="mb-2 inline-flex items-center gap-2 text-sm font-medium text-primary">
-                  <Sparkles className="h-4 w-4" />
-                  Production check
+                {resetError ? (
+                  <div className="rounded-[1.25rem] border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+                    {resetError}
+                  </div>
+                ) : null}
+
+                <div className="rounded-[1.4rem] border border-primary/15 bg-primary/8 p-4 text-sm leading-6 text-muted-foreground">
+                  <div className="mb-2 inline-flex items-center gap-2 text-sm font-medium text-primary">
+                    <Sparkles className="h-4 w-4" />
+                    Production check
+                  </div>
+                  If counts stay at zero on prod, verify `IP_HASH_SALT`, the active SQLite path, and write access for
+                  the `www-data` service user.
                 </div>
-                If counts stay at zero on prod, verify `IP_HASH_SALT`, the active SQLite path, and write access for the `www-data` service user.
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </section>
       </div>
     </main>

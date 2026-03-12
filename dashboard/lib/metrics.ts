@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 
 import { getDb } from "@/lib/db";
+import { countryCentroids, resolveCountryName } from "@/lib/geo";
 
 export type DailyMetricPoint = {
   date: string;
@@ -16,6 +17,18 @@ export type RecentDownload = {
   referer: string | null;
   userAgent: string | null;
   ipHash: string | null;
+  countryCode: string | null;
+  countryName: string | null;
+};
+
+export type DownloadOrigin = {
+  countryCode: string;
+  countryName: string;
+  downloads: number;
+  uniqueDownloaders: number;
+  latitude: number | null;
+  longitude: number | null;
+  share: number;
 };
 
 export type DashboardMetrics = {
@@ -29,12 +42,15 @@ export type DashboardMetrics = {
   latestDestination: string | null;
   dailySeries: DailyMetricPoint[];
   recentDownloads: RecentDownload[];
+  originSummary: DownloadOrigin[];
+  downloadsWithCountryLast30Days: number;
+  downloadsWithoutCountryLast30Days: number;
 };
 
 type CountRow = { total: number };
 type LatestDestinationRow = { destinationUrl: string | null };
 type DailyRow = { date: string; downloads: number; uniqueDownloaders: number };
-type WindowRow = { createdAt: string; ipHash: string | null };
+type WindowRow = { createdAt: string; ipHash: string | null; countryCode: string | null };
 type RecentRow = {
   id: number;
   createdAt: string;
@@ -43,6 +59,7 @@ type RecentRow = {
   referer: string | null;
   userAgent: string | null;
   ipHash: string | null;
+  countryCode: string | null;
 };
 
 const trailingWindowDays = 30;
@@ -73,7 +90,8 @@ export function getDashboardMetrics(options: { timeZone?: string } = {}): Dashbo
     .prepare<[], WindowRow>(
       `SELECT
         created_at AS createdAt,
-        ip_hash AS ipHash
+        ip_hash AS ipHash,
+        country_code AS countryCode
       FROM download_events
       WHERE created_at >= datetime('now', '-${trailingWindowBufferDays} days', 'start of day')
       ORDER BY created_at ASC`,
@@ -91,12 +109,17 @@ export function getDashboardMetrics(options: { timeZone?: string } = {}): Dashbo
         request_host AS requestHost,
         referer,
         user_agent AS userAgent,
-        ip_hash AS ipHash
+        ip_hash AS ipHash,
+        country_code AS countryCode
       FROM download_events
       ORDER BY created_at DESC
       LIMIT 12`,
     )
-    .all();
+    .all()
+    .map((row) => ({
+      ...row,
+      countryName: row.countryCode ? resolveCountryName(row.countryCode) : null,
+    }));
 
   return {
     timeZone,
@@ -109,6 +132,9 @@ export function getDashboardMetrics(options: { timeZone?: string } = {}): Dashbo
     latestDestination,
     dailySeries: rollingMetrics.dailySeries,
     recentDownloads,
+    originSummary: rollingMetrics.originSummary,
+    downloadsWithCountryLast30Days: rollingMetrics.downloadsWithCountryLast30Days,
+    downloadsWithoutCountryLast30Days: rollingMetrics.downloadsWithoutCountryLast30Days,
   };
 }
 
@@ -119,6 +145,7 @@ export function recordDownloadEvent(input: {
   referer: string | null;
   userAgent: string | null;
   ipAddress: string | null;
+  countryCode: string | null;
 }) {
   const db = getDb();
   const ipHash = hashIp(input.ipAddress);
@@ -130,14 +157,16 @@ export function recordDownloadEvent(input: {
       request_host,
       referer,
       user_agent,
-      ip_hash
+      ip_hash,
+      country_code
     ) VALUES (
       @productKey,
       @destinationUrl,
       @requestHost,
       @referer,
       @userAgent,
-      @ipHash
+      @ipHash,
+      @countryCode
     )`,
   ).run({
     productKey: input.productKey,
@@ -146,6 +175,7 @@ export function recordDownloadEvent(input: {
     referer: input.referer,
     userAgent: input.userAgent,
     ipHash,
+    countryCode: input.countryCode,
   });
 }
 
@@ -192,6 +222,16 @@ function buildRollingMetrics(rows: WindowRow[], timeZone: string) {
   const dailyCounts = new Map<string, DailyRow>();
   const uniqueKeysByDate = new Map<string, Set<string>>();
   const uniqueKeysLast30Days = new Set<string>();
+  const originsByCountry = new Map<
+    string,
+    {
+      countryCode: string;
+      countryName: string;
+      downloads: number;
+      uniqueKeys: Set<string>;
+    }
+  >();
+  let downloadsWithoutCountryLast30Days = 0;
 
   for (const key of dateKeys) {
     dailyCounts.set(key, {
@@ -222,6 +262,25 @@ function buildRollingMetrics(rows: WindowRow[], timeZone: string) {
       uniqueKeysByDate.set(dateKey, dailyUniqueKeys);
       uniqueKeysLast30Days.add(row.ipHash);
     }
+
+    if (row.countryCode) {
+      const origin = originsByCountry.get(row.countryCode) ?? {
+        countryCode: row.countryCode,
+        countryName: resolveCountryName(row.countryCode),
+        downloads: 0,
+        uniqueKeys: new Set<string>(),
+      };
+
+      origin.downloads += 1;
+
+      if (row.ipHash) {
+        origin.uniqueKeys.add(row.ipHash);
+      }
+
+      originsByCountry.set(row.countryCode, origin);
+    } else {
+      downloadsWithoutCountryLast30Days += 1;
+    }
   }
 
   const dailySeries = dateKeys.map((dateKey) => {
@@ -235,12 +294,38 @@ function buildRollingMetrics(rows: WindowRow[], timeZone: string) {
     };
   });
 
+  const downloadsLast30Days = sumDownloads(dailySeries);
+  const originSummary = Array.from(originsByCountry.values())
+    .map((origin) => {
+      const centroid = countryCentroids[origin.countryCode];
+
+      return {
+        countryCode: origin.countryCode,
+        countryName: origin.countryName,
+        downloads: origin.downloads,
+        uniqueDownloaders: origin.uniqueKeys.size,
+        latitude: centroid?.latitude ?? null,
+        longitude: centroid?.longitude ?? null,
+        share: downloadsLast30Days > 0 ? origin.downloads / downloadsLast30Days : 0,
+      };
+    })
+    .sort((left, right) => {
+      if (right.downloads !== left.downloads) {
+        return right.downloads - left.downloads;
+      }
+
+      return left.countryName.localeCompare(right.countryName);
+    });
+
   return {
     dailySeries,
     downloadsToday: dailySeries.at(-1)?.downloads ?? 0,
     downloadsLast7Days: sumDownloads(dailySeries.slice(-7)),
-    downloadsLast30Days: sumDownloads(dailySeries),
+    downloadsLast30Days,
     uniquesLast30Days: uniqueKeysLast30Days.size,
+    originSummary,
+    downloadsWithCountryLast30Days: originSummary.reduce((total, origin) => total + origin.downloads, 0),
+    downloadsWithoutCountryLast30Days,
   };
 }
 
