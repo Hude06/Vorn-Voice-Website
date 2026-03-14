@@ -15,9 +15,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Vorn | Voice Input for Software Work",
+  title: "Vorn | Mac Voice Dictation",
   description:
-    "Vorn Voice is a local-first macOS dictation app for software work. Hold a shortcut, speak naturally, and paste clean text into the tools you already use.",
+    "Turn speech into text in the Mac app you are already using. Vorn Voice is a local-first dictation app with a one-time $9.99 price.",
 };
 
 export default function RootLayout({

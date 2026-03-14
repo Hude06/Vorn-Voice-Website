@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { navItems } from "@/lib/site-content";
+import { navItems, vornOneTimePrice } from "@/lib/site-content";
 import { Menu, Mic2, X } from "lucide-react";
 
 type SiteHeaderProps = {
@@ -66,10 +66,10 @@ export function SiteHeader({ currentPath }: SiteHeaderProps) {
 
           <div className="flex items-center gap-3">
             <Badge className="rounded-full border-primary/35 bg-primary/10 text-primary hover:bg-primary/10">
-              System of tools
+              One-time {vornOneTimePrice}
             </Badge>
             <Button asChild className="rounded-full px-5 font-semibold shadow-lg shadow-primary/20">
-              <Link href="/download">Download Vorn Voice</Link>
+              <Link href="/download">Download for macOS</Link>
             </Button>
           </div>
         </div>
@@ -77,7 +77,7 @@ export function SiteHeader({ currentPath }: SiteHeaderProps) {
         {isMobileNavOpen ? (
           <div className="mt-4 space-y-4 border-t border-border/80 pt-4 md:hidden">
             <Badge className="rounded-full border-primary/35 bg-primary/10 text-primary hover:bg-primary/10">
-              System of tools
+              One-time {vornOneTimePrice}
             </Badge>
 
             <nav className="grid gap-2 text-sm text-muted-foreground">
@@ -106,7 +106,7 @@ export function SiteHeader({ currentPath }: SiteHeaderProps) {
               className="w-full rounded-full px-5 font-semibold shadow-lg shadow-primary/20"
             >
               <Link href="/download" onClick={() => setIsMobileNavOpen(false)}>
-                Download Vorn Voice
+                Download for macOS
               </Link>
             </Button>
           </div>
@@ -123,15 +123,14 @@ export function SiteFooter() {
         <div className="space-y-3">
           <p className="text-base font-semibold text-foreground">Vorn</p>
           <p className="max-w-xl leading-6">
-            A growing system of tools for software work, starting with voice input and
-            expanding into cursor-aware context and parallel coding workflows.
+            Turn speech into text in the Mac app you are already using.
           </p>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-2">
             <p className="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
-              Products
+              Explore
             </p>
             {navItems.map((item) => (
               <Link
@@ -146,11 +145,11 @@ export function SiteFooter() {
 
           <div className="space-y-2">
             <p className="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
-              Current focus
+              Pricing
             </p>
-            <p>Voice-first coding and software workflows.</p>
+            <p>{vornOneTimePrice} one time. No recurring subscription.</p>
             <Link href="/download" className="block hover:text-foreground">
-              Download Vorn Voice
+              Download for macOS
             </Link>
           </div>
         </div>
